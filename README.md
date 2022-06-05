@@ -59,9 +59,20 @@ ejercicios indicados.
   cat $base.lp >> $outputfile
   ```
 
+  Nuestro fichero *fmatrix* necesita una cabecera con el número de filas y de columnas. El número de columnas lo obtenemos fácilmente, ya que coincidirá con el orden del LPC + 1, teniendo en cuenta que se añade una posición para la ganancia.
+  Para encontrar el número de filas llevamos a cabo el siguiente proceso:
+  - Con *sptk x2x +fa* pasamos los *floats* del fichero *base.lp* a ASCII, de forma que tenemos un número en cada línea. 
+  - El comando *wc -l* nos devuelve el número de líneas que se le pasen y, por lo tanto, el número de valores que tenemos. 
+  - Por último con *perl -ne 'print $_/'$ncol', "\n";'* dividimos el número de valores por el número de columnas, obteniendo así el número de filas.
+
+  Ahora pasamos nrow y ncol a unsigned con *sptk x2x +aI* y los añadimos al comienzo del fichero de salida. Finalmente con *>>* añadimos los coeficientes que habíamos guardado en 
+  *base.lp* al mismo fichero de salida.
 
   * ¿Por qué es conveniente usar este formato (u otro parecido)? Tenga en cuenta cuál es el formato de
     entrada y cuál es el de resultado.
+
+    La ventaja de usar *fmatrix* es que es un formato legible, a diferencia de lo que teníamos en un principio, que eran un seguido de *floats* concatenados. Usando *fmatrix_show* en el terminal, podemos ver claramente el contenido de la matriz en formato ASCII.
+    <img src="img/fmatrix_show.png" width="800" align="center">
 
 - Escriba el *pipeline* principal usado para calcular los coeficientes cepstrales de predicción lineal
   (LPCC) en su fichero <code>scripts/wav2lpcc.sh</code>:
