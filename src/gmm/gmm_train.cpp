@@ -33,7 +33,7 @@ int main(int argc, const char *argv[]) {
   Filename gmm_filename(DEF_GMMFILE);
   unsigned int init_iterations=DEF_ITERATIONS, em_iterations=DEF_ITERATIONS;
   float init_threshold=DEF_THR, em_threshold=DEF_THR;
-  int init_method=0;
+  int init_method=1;
 
   ///Read command line options
   int retv = read_options(argc, argv, input_dir, input_ext, filenames,
@@ -56,10 +56,13 @@ int main(int argc, const char *argv[]) {
   /// initicialization accordingly.
   switch (init_method) {
   case 0:
+    gmm.random_init(data, nmix);
     break;
   case 1:
+    gmm.vq_lbg(data, nmix, init_iterations, init_threshold, verbose);
     break;
   case 2:
+    gmm.em_split(data, nmix, init_iterations, init_threshold, verbose);
     break;
   default:
     ;
@@ -67,6 +70,7 @@ int main(int argc, const char *argv[]) {
 
   /// \TODO Apply EM to estimate GMM parameters (complete the funcion in gmm.cpp)
 
+  gmm.em(data, em_iterations, em_threshold, verbose);
 
   //Create directory, if it is needed
   gmm_filename.checkDir();

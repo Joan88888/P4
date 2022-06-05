@@ -32,6 +32,19 @@ ejercicios indicados.
 - Analice el script `wav2lp.sh` y explique la misión de los distintos comandos involucrados en el *pipeline*
   principal (`sox`, `$X2X`, `$FRAME`, `$WINDOW` y `$LPC`). Explique el significado de cada una de las 
   opciones empleadas y de sus valores.
+  ```
+  sox $inputfile -t raw -e signed -b 16 - | $X2X +sf | $FRAME -l 240 -p 80 | $WINDOW -l 240 -L 240 |
+	  $LPC -l 240 -m $lpc_order > $base.lp
+  ```
+  - sox: es un programa que permite realizar distintas tareas con ficheros de audio. En este caso convertimos el fichero inputfile de .wav a .raw (sin cabecera) con -t raw. -e signed significa que usamos una codificación con signo y -b 16 que cuantificamos cada muestra con 16 bits.
+
+  - sptk x2x: es un comando de sptk que sirve para la conversión entre distintos formatos de datos. Con +sf estamos convirtiendo los datos de signed short a float.
+
+  - sptk frame: dividimos la señal de entrada en tramas de l muestras con un desplazamiento de p muestras. En este caso escogemos l = 240 muestras y p = 80 muestras.
+
+  - sptk window: multiplicamos cada trama por una ventana. Con -l y -L escogemos el tamaño de frame de la entrada y de la salida respectivamente (en este caso 240 muestras ambos). Al no especificar un tipo de ventana, sptk usa por defecto la Blackman.
+
+  - sptk lpc: por último, con esta opción extraemos los coeficientes LPC. Indicamos el tamaño de entrada (l = 240 muestras) y el orden del LPC (-m), que en este caso lo escogeremos desde run_spkid.sh. Los coeficientes se almacenan en el fichero temporal base.lp.
 
 - Explique el procedimiento seguido para obtener un fichero de formato *fmatrix* a partir de los ficheros de
   salida de SPTK (líneas 45 a 47 del script `wav2lp.sh`).
