@@ -32,7 +32,7 @@ ejercicios indicados.
 - Analice el script `wav2lp.sh` y explique la misión de los distintos comandos involucrados en el *pipeline*
   principal (`sox`, `$X2X`, `$FRAME`, `$WINDOW` y `$LPC`). Explique el significado de cada una de las 
   opciones empleadas y de sus valores.
-  ```
+  ```bash
   sox $inputfile -t raw -e signed -b 16 - | $X2X +sf | $FRAME -l 240 -p 80 | $WINDOW -l 240 -L 240 |
 	  $LPC -l 240 -m $lpc_order > $base.lp
   ```
@@ -48,6 +48,17 @@ ejercicios indicados.
 
 - Explique el procedimiento seguido para obtener un fichero de formato *fmatrix* a partir de los ficheros de
   salida de SPTK (líneas 45 a 47 del script `wav2lp.sh`).
+
+  ```bash
+  # Our array files need a header with the number of cols and rows:
+  ncol=$((lpc_order+1)) # lpc p =>  (gain a1 a2 ... ap) 
+  nrow=$($X2X +fa < $base.lp | wc -l | perl -ne 'print $_/'$ncol', "\n";')
+
+  # Build fmatrix file by placing nrow and ncol in front, and the data after them
+  echo $nrow $ncol | $X2X +aI > $outputfile
+  cat $base.lp >> $outputfile
+  ```
+
 
   * ¿Por qué es conveniente usar este formato (u otro parecido)? Tenga en cuenta cuál es el formato de
     entrada y cuál es el de resultado.
