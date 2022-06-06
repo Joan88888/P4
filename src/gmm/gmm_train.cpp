@@ -33,7 +33,7 @@ int main(int argc, const char *argv[]) {
   Filename gmm_filename(DEF_GMMFILE);
   unsigned int init_iterations=DEF_ITERATIONS, em_iterations=DEF_ITERATIONS;
   float init_threshold=DEF_THR, em_threshold=DEF_THR;
-  int init_method=1;
+  int init_method=0;
 
   ///Read command line options
   int retv = read_options(argc, argv, input_dir, input_ext, filenames,
@@ -54,6 +54,8 @@ int main(int argc, const char *argv[]) {
   /// 
   /// Other alternatives are: vq, em_split... See the options of the program and place each
   /// initicialization accordingly.
+  /// \DONE
+
   switch (init_method) {
   case 0:
     gmm.random_init(data, nmix);
@@ -69,7 +71,8 @@ int main(int argc, const char *argv[]) {
   }
 
   /// \TODO Apply EM to estimate GMM parameters (complete the funcion in gmm.cpp)
-
+  /// \DONE
+  
   gmm.em(data, em_iterations, em_threshold, verbose);
 
   //Create directory, if it is needed

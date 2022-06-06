@@ -101,6 +101,8 @@ namespace upc {
   }
 
   /// \TODO Compute the logprob for the whole input data.
+  /// \DONE
+
   float GMM::logprob(const fmatrix &data) const {    
 
     if (nmix == 0 or vector_size == 0 or vector_size != data.ncol())
@@ -111,6 +113,8 @@ namespace upc {
 
     for (n=0; n<data.nrow(); ++n) {
       /// \TODO Compute the logprob of a single frame of the input data; you can use gmm_logprob() above.
+      /// \DONE
+
       lprob += this->gmm_logprob(data[n]);
     }    
     return lprob/n;
@@ -210,6 +214,7 @@ namespace upc {
 	  //
       // Update old_prob, new_prob and inc_prob in order to stop the loop if logprob does not
       // increase more than inc_threshold.
+      /// \DONE
 
       new_prob = this->em_expectation(data, weights);
       inc_prob = new_prob - old_prob;

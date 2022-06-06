@@ -77,8 +77,18 @@ ejercicios indicados.
 - Escriba el *pipeline* principal usado para calcular los coeficientes cepstrales de predicción lineal
   (LPCC) en su fichero <code>scripts/wav2lpcc.sh</code>:
 
+  ```bash
+  sox $inputfile -t raw -e signed -b 16 - | $X2X +sf | $FRAME -l 240 -p 80 | $WINDOW -l 240 -L 240 |
+	  $LPC -l 240 -m $lpc_order | $LPCC -m $lpc_order -M $lpcc_order > $base.lpcc
+  ```
+
 - Escriba el *pipeline* principal usado para calcular los coeficientes cepstrales en escala Mel (MFCC) en su
   fichero <code>scripts/wav2mfcc.sh</code>:
+
+  ```bash
+  sox $inputfile -t raw -e signed -b 16 - | $X2X +sf | $FRAME -l 240 -p 80 | $WINDOW -l 240 -L 240 |
+	  $MFCC -s 8 -w 0 -l 240 -m $mfcc_order -n $nfilter > $base.mfcc
+  ```
 
 ### Extracción de características.
 
@@ -87,7 +97,25 @@ ejercicios indicados.
   
   + Indique **todas** las órdenes necesarias para obtener las gráficas a partir de las señales 
     parametrizadas.
+
+    - LP
+    ```
+    plot_gmm_feat -x 2 -y 3 -g green work/gmm/lp/SES081.gmm work/lp/BLOCK08/SES081/SA081S*
+    ```
+
+    - LPCC
+    ```
+    plot_gmm_feat -x 2 -y 3 -g green work/gmm/lpcc/SES081.gmm work/lpcc/BLOCK08/SES081/SA081S*
+    ```
+
+    - MFCC
+    ```
+    plot_gmm_feat -x 2 -y 3 -g green work/gmm/mfcc/SES081.gmm work/mfcc/BLOCK08/SES081/SA081S*
+    ```
+  
   + ¿Cuál de ellas le parece que contiene más información?
+
+  Me parece que la MFCC es la que contiene más información, ya que la distribución es aparentemente la más dispersa, es decir, que los parámetros están más incorrelados. En cambio, en el caso de los coeficientes LP vemos una dispersión bastante lineal igual que, aunque en menor medida, con los coeficientes LPCC.
 
 - Usando el programa <code>pearson</code>, obtenga los coeficientes de correlación normalizada entre los
   parámetros 2 y 3 para un locutor, y rellene la tabla siguiente con los valores obtenidos.
@@ -118,6 +146,10 @@ Complete el código necesario para realizar reconociminto del locutor y optimice
 - Inserte una tabla con la tasa de error obtenida en el reconocimiento de los locutores de la base de datos
   SPEECON usando su mejor sistema de reconocimiento para los parámetros LP, LPCC y MFCC.
 
+  |               | LP   | LPCC | MFCC |
+  |---------------|:----:|:----:|:----:|
+  | TASA DE ERROR |      |      |      |
+
 ### Verificación del locutor.
 
 Complete el código necesario para realizar verificación del locutor y optimice sus parámetros.
@@ -127,6 +159,12 @@ Complete el código necesario para realizar verificación del locutor y optimice
   pérdidas, y el score obtenido usando la parametrización que mejor resultado le hubiera dado en la tarea
   de reconocimiento.
  
+  |                | LP              | LPCC            | MFCC            |
+  |----------------|:---------------:|:---------------:|:---------------:|
+  | UMBRAL ÓPTIMO  |0.605959490682996|      |      |
+  |  PÉRDIDAS      |105/250=0.4200   |      |      |
+  | FALSAS ALARMAS |22/1000=0.0220   |      |      |
+  | COST DETECTION |61.8             |      |      |
 ### Test final
 
 - Adjunte, en el repositorio de la práctica, los ficheros `class_test.log` y `verif_test.log` 

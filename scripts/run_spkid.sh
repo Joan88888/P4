@@ -12,6 +12,8 @@
 # - w:        a working directory for temporary files
 # - name_exp: name of the experiment
 # - db:       directory of the speecon database 
+# \DONE
+
 lists=lists
 w=work
 name_exp=one
@@ -19,8 +21,8 @@ db_devel=spk_8mu/speecon
 db_final=spk_8mu/sr_test
 world=users
 
-WORLD_OPTS="-T 0.0001 -N26 -m 62"
-TRAIN_OPTS="-T 0.0001 -N30 -m 50"
+WORLD_OPTS="-v 5 -i 1 -T 0.00001 -N 100 -m 20 -t 0.00001 -n 100"
+TRAIN_OPTS="-v 5 -i 2 -T 0.00001 -t 0.001 -N 200 -m 20"
 
 # ------------------------
 # Usage
@@ -89,6 +91,7 @@ fi
 # \TODO
 # Create your own features with the name compute_$FEAT(), where $FEAT is the name of the feature.
 # - Select (or change) different features, options, etc. Make you best choice and try several options.
+# \DONE
 
 compute_lp() {
     db=$1
@@ -105,7 +108,7 @@ compute_lpcc() {
     shift
     for filename in $(sort $*); do
         mkdir -p `dirname $w/$FEAT/$filename.$FEAT`
-        EXEC="wav2lpcc 8 13 $db/$filename.wav $w/$FEAT/$filename.$FEAT"
+        EXEC="wav2lpcc 35 24 $db/$filename.wav $w/$FEAT/$filename.$FEAT"
         echo $EXEC && $EXEC || exit 1
     done
 }
@@ -115,7 +118,7 @@ compute_mfcc() {
     shift
     for filename in $(sort $*); do
         mkdir -p `dirname $w/$FEAT/$filename.$FEAT`
-        EXEC="wav2mfcc 16 30 $db/$filename.wav $w/$FEAT/$filename.$FEAT"
+        EXEC="wav2mfcc 19 30 $db/$filename.wav $w/$FEAT/$filename.$FEAT"
         echo $EXEC && $EXEC || exit 1
     done
 }
@@ -145,10 +148,12 @@ for cmd in $*; do
        ## @file
 	   # \TODO
 	   # Select (or change) good parameters for gmm_train
+       # \DONE
+
        for dir in $db_devel/BLOCK*/SES* ; do
            name=${dir/*\/}
            echo $name ----
-           gmm_train  -v 1 $TRAIN_OPTS -d $w/$FEAT -e $FEAT -g $w/gmm/$FEAT/$name.gmm $lists/class/$name.train || exit 1
+           gmm_train  $TRAIN_OPTS -d $w/$FEAT -e $FEAT -g $w/gmm/$FEAT/$name.gmm $lists/class/$name.train || exit 1
            echo
        done
    elif [[ $cmd == test ]]; then
@@ -171,7 +176,9 @@ for cmd in $*; do
 	   # Implement 'trainworld' in order to get a Universal Background Model for speaker verification
 	   #
 	   # - The name of the world model will be used by gmm_verify in the 'verify' command below.
-       gmm_train  -v 1 $WORLD_OPTS -d $w/$FEAT -e $FEAT -g $w/gmm/$FEAT/$world.gmm $lists/verif/$world.train || exit 1
+       # \DONE
+
+       gmm_train  $WORLD_OPTS -d $w/$FEAT -e $FEAT -g $w/gmm/$FEAT/$world.gmm $lists/verif/$world.train || exit 1
 
    elif [[ $cmd == verify ]]; then
        ## @file
@@ -182,6 +189,8 @@ for cmd in $*; do
 	   #   For instance:
 	   #   * <code> gmm_verify ... > $w/verif_${FEAT}_${name_exp}.log </code>
 	   #   * <code> gmm_verify ... | tee $w/verif_${FEAT}_${name_exp}.log </code>
+       # \DONE
+
        gmm_verify -d $w/$FEAT -e $FEAT -D $w/gmm/$FEAT -E gmm -w $world lists/gmm.list lists/verif/all.test lists/verif/all.test.candidates | tee $w/verif_${FEAT}_${name_exp}.log
 
    elif [[ $cmd == verifyerr ]]; then
@@ -199,6 +208,8 @@ for cmd in $*; do
 	   # Perform the final test on the speaker classification of the files in spk_ima/sr_test/spk_cls.
 	   # The list of users is the same as for the classification task. The list of files to be
 	   # recognized is lists/final/class.test
+       # \DONE
+
        compute_$FEAT $db_final $lists/final/class.test
        (gmm_classify -d $w/$FEAT -e $FEAT -D $w/gmm/$FEAT -E gmm $lists/gmm.list  $lists/final/class.test | tee class_test.log) || exit 1
 
@@ -210,11 +221,14 @@ for cmd in $*; do
 	   # The list of legitimate users is lists/final/verif.users, the list of files to be verified
 	   # is lists/final/verif.test, and the list of users claimed by the test files is
 	   # lists/final/verif.test.candidates
+       # \DONE
+
        compute_$FEAT $db_final $lists/final/verif.test
        gmm_verify -d $w/$FEAT -e $FEAT -D $w/gmm/$FEAT -E gmm -w $world lists/final/verif.users lists/final/verif.test lists/final/verif.test.candidates | tee $w/verif_test.log
-       perl -ane 'print "$F[0]\t$[1]\t"
-            if ($F[2] > 0.781910068151602) {print "1\n"}
-            else {print "0\n"}' $w/verif_test.log | tee verif_test.log
+       
+       perl -ane 'print "$F[0]\t$[1]\t";
+                if ($F[2] > 0.390067042151) {print "1\n"}
+                else {print "0\n"}' $w/verif_test.log | tee verif_test.log
 
    # If the command is not recognize, check if it is the name
    # of a feature and a compute_$FEAT function exists.
