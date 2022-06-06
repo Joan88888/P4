@@ -95,6 +95,15 @@ ejercicios indicados.
 - Inserte una imagen mostrando la dependencia entre los coeficientes 2 y 3 de las tres parametrizaciones
   para todas las señales de un locutor.
   
+  - LP
+  <img src="img/coef_lp.png" width="800" align="center">
+
+  - LPCC
+  <img src="img/coef_lpcc.png" width="800" align="center">
+
+  - MFCC
+  <img src="img/coef_mfcc.png" width="800" align="center">
+
   + Indique **todas** las órdenes necesarias para obtener las gráficas a partir de las señales 
     parametrizadas.
 
@@ -148,7 +157,7 @@ Complete el código necesario para realizar reconociminto del locutor y optimice
 
   |               | LP   | LPCC | MFCC |
   |---------------|:----:|:----:|:----:|
-  | TASA DE ERROR |      |      |      |
+  | TASA DE ERROR |      |0.76% |1.53% |
 
 ### Verificación del locutor.
 
@@ -161,10 +170,10 @@ Complete el código necesario para realizar verificación del locutor y optimice
  
   |                | LP              | LPCC            | MFCC            |
   |----------------|:---------------:|:---------------:|:---------------:|
-  | UMBRAL ÓPTIMO  |0.605959490682996|      |      |
-  |  PÉRDIDAS      |105/250=0.4200   |      |      |
-  | FALSAS ALARMAS |22/1000=0.0220   |      |      |
-  | COST DETECTION |61.8             |      |      |
+  | UMBRAL ÓPTIMO  |0.605959490682996|0.390067042151   |0.753009075142497|
+  |  PÉRDIDAS      |105/250=0.4200   |8/250=0.0320     |35/250=0.1400    |
+  | FALSAS ALARMAS |22/1000=0.0220   |12/1000=0.0120   |15/1000=0.0150   |
+  | COST DETECTION |61.8             |14.0             |27.5             |
 ### Test final
 
 - Adjunte, en el repositorio de la práctica, los ficheros `class_test.log` y `verif_test.log` 
