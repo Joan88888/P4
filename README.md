@@ -96,13 +96,16 @@ ejercicios indicados.
   para todas las señales de un locutor.
   
   - LP
-  <img src="img/coef_lp.png" width="800" align="center">
+  <img src="img/coef_lp.png" width="400" align="center">
+
 
   - LPCC
-  <img src="img/coef_lpcc.png" width="800" align="center">
+  <img src="img/coef_lpcc.png" width="400" align="center">
+
 
   - MFCC
-  <img src="img/coef_mfcc.png" width="800" align="center">
+  <img src="img/coef_mfcc.png" width="400" align="center">
+
 
   + Indique **todas** las órdenes necesarias para obtener las gráficas a partir de las señales 
     parametrizadas.
@@ -124,18 +127,25 @@ ejercicios indicados.
   
   + ¿Cuál de ellas le parece que contiene más información?
 
-  Me parece que la MFCC es la que contiene más información, ya que la distribución es aparentemente la más dispersa, es decir, que los parámetros están más incorrelados. En cambio, en el caso de los coeficientes LP vemos una dispersión bastante lineal igual que, aunque en menor medida, con los coeficientes LPCC.
+  Me parece que la MFCC y la LPCC son las que contienen más información, ya que su distribución es aparentemente más dispersa, es decir, que los parámetros están más incorrelados. En cambio, en el caso de los coeficientes LP vemos una dispersión bastante lineal igual.
 
 - Usando el programa <code>pearson</code>, obtenga los coeficientes de correlación normalizada entre los
   parámetros 2 y 3 para un locutor, y rellene la tabla siguiente con los valores obtenidos.
 
-  |                        | LP   | LPCC | MFCC |
-  |------------------------|:----:|:----:|:----:|
-  | &rho;<sub>x</sub>[2,3] |      |      |      |
+  <img src="img/pearson" width="800" align="center">
+
+  |                        | LP      | LPCC   | MFCC   |
+  |------------------------|:-------:|:------:|:------:|
+  | &rho;<sub>x</sub>[2,3] |-0.777456|0.409121|0.408001|
   
   + Compare los resultados de <code>pearson</code> con los obtenidos gráficamente.
   
+Con estos resultados confirmamos que los coeficientes LP son los que están más correlados (en valor absoluto) y, por lo tanto, los que contienen menos información.
+
 - Según la teoría, ¿qué parámetros considera adecuados para el cálculo de los coeficientes LPCC y MFCC?
+
+El orden del LPCC debería ser de al menos 13 y para el MFCC se necesitan entre 24 y 40 filtros y al menos 13 coeficientes.
+
 
 ### Entrenamiento y visualización de los GMM.
 
@@ -143,10 +153,30 @@ Complete el código necesario para entrenar modelos GMM.
 
 - Inserte una gráfica que muestre la función de densidad de probabilidad modelada por el GMM de un locutor
   para sus dos primeros coeficientes de MFCC.
-  
+
+  <img src="img/gmm_mfcc_188_2coef.png" width="400" align="center">
+
+
 - Inserte una gráfica que permita comparar los modelos y poblaciones de dos locutores distintos (la gŕafica
   de la página 20 del enunciado puede servirle de referencia del resultado deseado). Analice la capacidad
   del modelado GMM para diferenciar las señales de uno y otro.
+
+  - LP
+
+  <img src="img/gmm_lp_comp.png" width="800" align="center">
+
+
+  - LPCC
+
+  <img src="img/gmm_lpcc_comp.png" width="800" align="center">
+
+
+  - MFCC
+
+  <img src="img/gmm_mfcc_comp.png" width="800" align="center">
+
+
+  Si nos fijamos bien, en todos los casos podemos diferenciar un locutor de otro con el modelado GMM, aunque a simple vista parecen bastante parecidos entre ellos.
 
 ### Reconocimiento del locutor.
 
@@ -157,7 +187,7 @@ Complete el código necesario para realizar reconociminto del locutor y optimice
 
   |               | LP   | LPCC | MFCC |
   |---------------|:----:|:----:|:----:|
-  | TASA DE ERROR |      |0.76% |1.53% |
+  | TASA DE ERROR |12.74%|0.76% |1.53% |
 
 ### Verificación del locutor.
 
