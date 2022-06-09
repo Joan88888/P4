@@ -226,7 +226,7 @@ for cmd in $*; do
        compute_$FEAT $db_final $lists/final/verif.test
        gmm_verify -d $w/$FEAT -e $FEAT -D $w/gmm/$FEAT -E gmm -w $world lists/final/verif.users lists/final/verif.test lists/final/verif.test.candidates | tee $w/verif_test.log
        
-       perl -ane 'print "$F[0]\t$[1]\t";
+       perl -ane 'print "$F[0]\t$F[1]\t";
                 if ($F[2] > 0.390067042151) {print "1\n"}
                 else {print "0\n"}' $w/verif_test.log | tee verif_test.log
 
